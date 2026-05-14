@@ -124,11 +124,24 @@ Page({
   },
 
   renderSummary(result) {
+    const leaderboard = (result.leaderboard || []).map((item, index) => {
+      const nickName = item.nickName || "微信用户";
+      const rankIcons = ["🏆", "🥈", "🥉"];
+      const rankClasses = ["gold", "silver", "bronze"];
+      return {
+        ...item,
+        nickName,
+        rankText: rankIcons[index] || String(index + 1),
+        rankClass: rankClasses[index] || "",
+        avatarText: nickName.slice(0, 1)
+      };
+    });
+
     this.setData({
       pool: result.pool || 0,
       players: result.players || 0,
       lagging: result.lagging || 0,
-      leaderboard: result.leaderboard || []
+      leaderboard
     });
   },
 

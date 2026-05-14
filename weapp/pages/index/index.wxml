@@ -66,17 +66,26 @@
 
   <view class="rules">
     <view class="section-title">规则</view>
-    <view class="rule-row">
-      <text>01</text>
-      <view>当天 23:59 前达到 10,000 步，即为达标。</view>
+    <view class="rule-card">
+      <view class="rule-index">01</view>
+      <view class="rule-copy">
+        <view class="rule-title">挑战目标</view>
+        <view class="rule-text">当天 23:59 前，微信运动步数达到 10,000 步即为达标。</view>
+      </view>
     </view>
-    <view class="rule-row">
-      <text>02</text>
-      <view>加入后可同步微信运动步数，排行榜按今日步数排序。</view>
+    <view class="rule-card">
+      <view class="rule-index">02</view>
+      <view class="rule-copy">
+        <view class="rule-title">步数校验</view>
+        <view class="rule-text">点击加入或同步步数后，需要授权微信运动；排行榜按今日真实步数排序。</view>
+      </view>
     </view>
-    <view class="rule-row">
-      <text>03</text>
-      <view>当前为挑战演示规则，真实支付与奖励需要另行合规配置。</view>
+    <view class="rule-card">
+      <view class="rule-index">03</view>
+      <view class="rule-copy">
+        <view class="rule-title">挑战金</view>
+        <view class="rule-text">当前金额用于测试挑战流程，不会真实扣款；正式支付与奖励需接入合规支付和结算规则。</view>
+      </view>
     </view>
   </view>
 
@@ -84,7 +93,8 @@
     <view class="section-title">挑战榜</view>
     <view wx:if="{{leaderboard.length === 0}}" class="empty">暂无参与者</view>
     <view wx:for="{{leaderboard}}" wx:key="openid" class="row">
-      <view class="rank">{{index + 1}}</view>
+      <view class="rank {{item.rankClass}}">{{item.rankText}}</view>
+      <view class="avatar">{{item.avatarText}}</view>
       <view class="person">
         <view class="name">{{item.nickName || '微信用户'}}</view>
         <view class="meta">{{item.steps}} 步 · ¥{{item.stake}}</view>
