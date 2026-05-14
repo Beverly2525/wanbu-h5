@@ -7,6 +7,7 @@ cloud.init({
 const db = cloud.database();
 const players = db.collection("players");
 const targetSteps = 10000;
+let playersCollectionReady = false;
 
 function todayKey() {
   const now = new Date();
@@ -32,11 +33,11 @@ function cleanName(value) {
 }
 
 async function upsertPlayer(openid, payload) {
+  await ensurePlayersCollection();
   const day = todayKey();
   const id = `${day}_${openid}`;
   const now = db.serverDate();
   const data = {
-    _id: id,
     openid,
     day,
     nickName: cleanName(payload.nickName),
@@ -69,6 +70,7 @@ async function upsertPlayer(openid, payload) {
 }
 
 async function buildSummary() {
+  await ensurePlayersCollection();
   const day = todayKey();
   const result = await players
     .where({ day })
@@ -93,6 +95,29 @@ async function buildSummary() {
       joined: Boolean(row.joined)
     }))
   };
+}
+
+async function ensurePlayersCollection() {
+  if (playersCollectionReady) {
+    return;
+  }
+
+  try {
+    await db.createCollection("players");
+  } catch (error) {
+    const message = String(error && error.message ? error.message : error);
+    if (!message.includes("collection exists") && !message.includes("already exists")) {
+      // If the collection already exists, some runtimes return a localized message.
+      // A harmless count probes whether it is usable before surfacing the original error.
+      try {
+        await players.limit(1).get();
+      } catch {
+        throw error;
+      }
+    }
+  }
+
+  playersCollectionReady = true;
 }
 
 exports.main = async (event) => {
