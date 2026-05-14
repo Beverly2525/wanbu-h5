@@ -64,6 +64,22 @@
     </view>
   </view>
 
+  <view class="rules">
+    <view class="section-title">规则</view>
+    <view class="rule-row">
+      <text>01</text>
+      <view>当天 23:59 前达到 10,000 步，即为达标。</view>
+    </view>
+    <view class="rule-row">
+      <text>02</text>
+      <view>加入后可同步微信运动步数，排行榜按今日步数排序。</view>
+    </view>
+    <view class="rule-row">
+      <text>03</text>
+      <view>当前为挑战演示规则，真实支付与奖励需要另行合规配置。</view>
+    </view>
+  </view>
+
   <view class="board">
     <view class="section-title">挑战榜</view>
     <view wx:if="{{leaderboard.length === 0}}" class="empty">暂无参与者</view>

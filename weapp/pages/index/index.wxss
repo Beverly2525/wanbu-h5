@@ -117,6 +117,7 @@ button::after {
 
 .panel,
 .pool,
+.rules,
 .row,
 .empty {
   border-radius: 26rpx;
@@ -231,6 +232,27 @@ button::after {
 
 .board {
   margin-top: 34rpx;
+}
+
+.rules {
+  margin-top: 28rpx;
+  padding: 32rpx;
+}
+
+.rule-row {
+  display: grid;
+  grid-template-columns: 54rpx 1fr;
+  gap: 18rpx;
+  margin-top: 22rpx;
+  color: #565e59;
+  font-size: 26rpx;
+  line-height: 1.45;
+}
+
+.rule-row text {
+  color: #26724f;
+  font-size: 24rpx;
+  font-weight: 850;
 }
 
 .row {
