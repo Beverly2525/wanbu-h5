@@ -17,7 +17,9 @@ Page({
     pool: 0,
     players: 0,
     lagging: 0,
-    leaderboard: []
+    leaderboard: [],
+    history: [],
+    boardMode: "today"
   },
 
   onLoad() {
@@ -101,6 +103,12 @@ Page({
       .catch(() => {});
   },
 
+  switchBoard(event) {
+    this.setData({
+      boardMode: event.currentTarget.dataset.mode
+    });
+  },
+
   callWanbu(data) {
     return new Promise((resolve, reject) => {
       if (!wx.cloud) {
@@ -135,13 +143,28 @@ Page({
         rankClass: rankClasses[index] || ""
       };
     });
+    const history = (result.history || []).map((day) => ({
+      ...day,
+      label: this.formatDayLabel(day.day),
+      top: (day.top || []).map((item, index) => ({
+        ...item,
+        rankText: String(index + 1)
+      }))
+    }));
 
     this.setData({
       pool: result.pool || 0,
       players: result.players || 0,
       lagging: result.lagging || 0,
-      leaderboard
+      leaderboard,
+      history
     });
+  },
+
+  formatDayLabel(day) {
+    if (!day) return "";
+    const parts = day.split("-");
+    return parts.length === 3 ? `${Number(parts[1])}月${Number(parts[2])}日` : day;
   },
 
   updateSteps(steps) {

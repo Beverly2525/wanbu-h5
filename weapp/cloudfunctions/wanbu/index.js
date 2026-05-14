@@ -97,6 +97,51 @@ async function buildSummary() {
   };
 }
 
+async function buildHistory() {
+  await ensurePlayersCollection();
+  const result = await players
+    .orderBy("day", "desc")
+    .orderBy("steps", "desc")
+    .limit(300)
+    .get();
+
+  const days = [];
+  const byDay = {};
+
+  for (const row of result.data || []) {
+    if (!byDay[row.day]) {
+      byDay[row.day] = {
+        day: row.day,
+        players: 0,
+        reached: 0,
+        top: []
+      };
+      days.push(byDay[row.day]);
+    }
+
+    const group = byDay[row.day];
+    if (row.joined) {
+      group.players += 1;
+    }
+    if (Number(row.steps || 0) >= targetSteps) {
+      group.reached += 1;
+    }
+    if (group.top.length < 3) {
+      group.top.push({
+        openid: row.openid,
+        nickName: row.nickName || "微信用户",
+        stake: Number(row.stake || 1),
+        steps: Number(row.steps || 0),
+        joined: Boolean(row.joined)
+      });
+    }
+  }
+
+  return {
+    history: days.slice(0, 7)
+  };
+}
+
 async function ensurePlayersCollection() {
   if (playersCollectionReady) {
     return;
@@ -128,7 +173,8 @@ exports.main = async (event) => {
   if (action === "leaderboard") {
     return {
       ok: true,
-      ...(await buildSummary())
+      ...(await buildSummary()),
+      ...(await buildHistory())
     };
   }
 
@@ -152,6 +198,7 @@ exports.main = async (event) => {
   return {
     ok: true,
     steps,
-    ...(await buildSummary())
+    ...(await buildSummary()),
+    ...(await buildHistory())
   };
 };
