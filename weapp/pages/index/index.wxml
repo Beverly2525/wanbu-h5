@@ -40,13 +40,13 @@
     />
 
     <view class="stake-row">
-      <button
+      <view
         wx:for="{{stakes}}"
         wx:key="*this"
         class="stake {{stake === item ? 'active' : ''}}"
         bindtap="chooseStake"
         data-value="{{item}}"
-      >¥{{item}}</button>
+      >¥{{item}}</view>
     </view>
 
     <button class="primary" bindtap="joinChallenge">加入挑战</button>
