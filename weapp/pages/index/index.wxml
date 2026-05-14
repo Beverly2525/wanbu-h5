@@ -94,7 +94,6 @@
     <view wx:if="{{leaderboard.length === 0}}" class="empty">暂无参与者</view>
     <view wx:for="{{leaderboard}}" wx:key="openid" class="row">
       <view class="rank {{item.rankClass}}">{{item.rankText}}</view>
-      <view class="avatar">{{item.avatarText}}</view>
       <view class="person">
         <view class="name">{{item.nickName || '微信用户'}}</view>
         <view class="meta">{{item.steps}} 步 · ¥{{item.stake}}</view>

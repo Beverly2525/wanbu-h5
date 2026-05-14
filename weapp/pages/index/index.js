@@ -132,8 +132,7 @@ Page({
         ...item,
         nickName,
         rankText: rankIcons[index] || String(index + 1),
-        rankClass: rankClasses[index] || "",
-        avatarText: nickName.slice(0, 1)
+        rankClass: rankClasses[index] || ""
       };
     });
 
