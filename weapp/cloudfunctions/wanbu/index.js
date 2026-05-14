@@ -40,7 +40,7 @@ async function upsertPlayer(openid, payload) {
     openid,
     day,
     nickName: cleanName(payload.nickName),
-    stake: Number(payload.stake || 19),
+    stake: Number(payload.stake || 1),
     joined: Boolean(payload.joined),
     steps: Number(payload.steps || 0),
     updatedAt: now
@@ -88,7 +88,7 @@ async function buildSummary() {
     leaderboard: rows.map((row) => ({
       openid: row.openid,
       nickName: row.nickName || "微信用户",
-      stake: Number(row.stake || 19),
+      stake: Number(row.stake || 1),
       steps: Number(row.steps || 0),
       joined: Boolean(row.joined)
     }))

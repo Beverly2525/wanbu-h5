@@ -11,8 +11,8 @@ Page({
     progress: 0,
     timeLeft: "--:--",
     nickName: "",
-    stake: 19,
-    stakes: [19, 39, 69, 99],
+    stake: 1,
+    stakes: [1, 5, 10],
     joined: false,
     pool: 0,
     players: 0,
@@ -53,14 +53,14 @@ Page({
 
   joinChallenge() {
     if (!this.data.nickName.trim()) {
-      wx.showToast({ title: "先填写昵称", icon: "none" });
+      wx.showToast({ title: "先填昵称", icon: "none" });
       return;
     }
 
     this.syncSteps(true)
       .then(() => {
         this.setData({ joined: true });
-        wx.showToast({ title: "已加入挑战", icon: "success" });
+        wx.showToast({ title: "已加入", icon: "success" });
       })
       .catch((error) => this.showError(error));
   },
@@ -69,7 +69,7 @@ Page({
     return this.getWeRunData()
       .then((res) => {
         if (!res.cloudID) {
-          throw new Error("请先开通云开发后再同步步数");
+          throw new Error("请先开通云开发");
         }
 
         return this.callWanbu({
