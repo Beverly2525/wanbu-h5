@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f6f2e8">
+    <title>万步挑战</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero" aria-label="今日万步挑战">
+        <div class="hero-bg" aria-hidden="true"></div>
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">今日挑战</p>
+            <h1>万步挑战</h1>
+          </div>
+          <button class="icon-btn" id="shareBtn" type="button" aria-label="分享">
+            <span aria-hidden="true">↗</span>
+          </button>
+        </header>
+
+        <div class="step-orbit" aria-label="步数进度">
+          <svg viewBox="0 0 180 180" role="img" aria-labelledby="progressTitle">
+            <title id="progressTitle">今日步数进度</title>
+            <circle class="track" cx="90" cy="90" r="76"></circle>
+            <circle class="meter" id="meterCircle" cx="90" cy="90" r="76"></circle>
+          </svg>
+          <div class="step-copy">
+            <span id="stepCount">7,260</span>
+            <small>目标 10,000 步</small>
+          </div>
+        </div>
+
+        <div class="hero-stats">
+          <div>
+            <span id="timeLeft">--:--</span>
+            <small>今日剩余</small>
+          </div>
+          <div>
+            <span id="winChance">72%</span>
+            <small>完成进度</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="join-panel" aria-label="加入挑战">
+        <div class="panel-head">
+          <div>
+            <h2>设置今日挑战金</h2>
+            <p>使用虚拟挑战金演示规则，真实资金版本上线前需要支付和合规审核。</p>
+          </div>
+          <span class="status-pill" id="joinStatus">未加入</span>
+        </div>
+
+        <div class="stake-row" aria-label="选择挑战金">
+          <button class="stake is-active" type="button" data-stake="19">19</button>
+          <button class="stake" type="button" data-stake="39">39</button>
+          <button class="stake" type="button" data-stake="69">69</button>
+          <button class="stake" type="button" data-stake="99">99</button>
+        </div>
+
+        <button class="primary-btn" id="joinBtn" type="button">
+          加入今日 10,000 步挑战
+        </button>
+      </section>
+
+      <section class="pool-band" aria-label="激励池">
+        <div>
+          <p class="eyebrow">当前激励池</p>
+          <strong id="poolAmount">¥8,932</strong>
+        </div>
+        <div class="pool-detail">
+          <span id="playerCount">312 人参与</span>
+          <span id="failCount">48 人落后</span>
+        </div>
+      </section>
+
+      <section class="action-grid" aria-label="操作">
+        <button id="syncBtn" class="tool-btn" type="button">
+          <span aria-hidden="true">⌁</span>
+          同步步数
+        </button>
+        <button id="simulateBtn" class="tool-btn" type="button">
+          <span aria-hidden="true">＋</span>
+          模拟走路
+        </button>
+        <button id="settleBtn" class="tool-btn" type="button">
+          <span aria-hidden="true">✓</span>
+          今日结算
+        </button>
+      </section>
+
+      <section class="list-section" aria-label="排行榜">
+        <div class="section-title">
+          <h2>挑战榜</h2>
+          <span>实时</span>
+        </div>
+        <ol class="leaderboard" id="leaderboard"></ol>
+      </section>
+
+      <section class="rules" aria-label="规则">
+        <h2>规则</h2>
+        <ul>
+          <li>当天 23:59 前达到 10,000 步视为成功。</li>
+          <li>未达标用户的挑战金进入激励池，由达标用户按规则获得奖励。</li>
+          <li>H5 原型使用模拟数据；微信步数需要接入微信运动/服务端校验。</li>
+        </ul>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
