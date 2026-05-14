@@ -69,22 +69,29 @@
     <view class="rule-card">
       <view class="rule-index">01</view>
       <view class="rule-copy">
-        <view class="rule-title">挑战目标</view>
-        <view class="rule-text">当天 23:59 前，微信运动步数达到 10,000 步即为达标。</view>
+        <view class="rule-title">健康目标</view>
+        <view class="rule-text">每天 23:59 前达到 10,000 步即为达标。目标是保持稳定运动，不鼓励过量刷步。</view>
       </view>
     </view>
     <view class="rule-card">
       <view class="rule-index">02</view>
       <view class="rule-copy">
-        <view class="rule-title">步数校验</view>
-        <view class="rule-text">点击加入或同步步数后，需要授权微信运动；排行榜按今日真实步数排序。</view>
+        <view class="rule-title">真实校验</view>
+        <view class="rule-text">加入或同步时授权微信运动，系统按今日真实步数更新排行榜。</view>
       </view>
     </view>
     <view class="rule-card">
       <view class="rule-index">03</view>
       <view class="rule-copy">
-        <view class="rule-title">挑战金</view>
-        <view class="rule-text">当前金额用于测试挑战流程，不会真实扣款；正式支付与奖励需接入合规支付和结算规则。</view>
+        <view class="rule-title">奖励方式</view>
+        <view class="rule-text">达标者平分未达标挑战金；排行榜用于荣誉展示，奖金只看是否达标，避免为了名次过度运动。</view>
+      </view>
+    </view>
+    <view class="rule-card">
+      <view class="rule-index">04</view>
+      <view class="rule-copy">
+        <view class="rule-title">当前状态</view>
+        <view class="rule-text">当前金额仅用于测试流程，不会真实扣款；正式支付、退款和奖励需接入合规结算。</view>
       </view>
     </view>
   </view>
@@ -109,14 +116,13 @@
     <view wx:if="{{boardMode === 'today'}}">
       <view wx:if="{{leaderboard.length === 0}}" class="empty">暂无参与者</view>
       <view wx:for="{{leaderboard}}" wx:key="openid" class="row">
-        <view class="rank {{item.rankClass}}">{{item.rankText}}</view>
+        <view class="rank-icon {{item.rankClass}}">{{item.rankIcon}}</view>
+        <view class="rank-number">{{item.rankNumber}}</view>
         <view class="person">
           <view class="name">{{item.nickName || '微信用户'}}</view>
           <view class="meta">{{item.steps}} 步 · ¥{{item.stake}}</view>
         </view>
-        <view class="done {{item.steps >= 10000 ? '' : 'risk'}}">
-          {{item.steps >= 10000 ? '达标' : '冲刺'}}
-        </view>
+        <view class="bonus {{item.bonus > 0 ? '' : 'muted'}}">¥{{item.bonus || 0}}</view>
       </view>
     </view>
 

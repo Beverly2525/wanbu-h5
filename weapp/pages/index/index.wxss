@@ -312,30 +312,34 @@ button::after {
 
 .row {
   display: grid;
-  grid-template-columns: 58rpx 1fr auto;
-  gap: 16rpx;
+  grid-template-columns: 42rpx 40rpx 1fr auto;
+  gap: 14rpx;
   align-items: center;
   margin-top: 18rpx;
   padding: 24rpx;
 }
 
-.rank {
-  width: 50rpx;
-  height: 50rpx;
-  border-radius: 50%;
-  background: rgba(47, 138, 99, 0.1);
-  color: #26724f;
-  font-size: 23rpx;
+.rank-icon {
+  width: 42rpx;
+  height: 42rpx;
+  color: #9aa29d;
+  font-size: 28rpx;
   font-weight: 800;
-  line-height: 50rpx;
+  line-height: 42rpx;
   text-align: center;
 }
 
-.rank.gold,
-.rank.silver,
-.rank.bronze {
-  background: transparent;
+.rank-icon.gold,
+.rank-icon.silver,
+.rank-icon.bronze {
   font-size: 34rpx;
+}
+
+.rank-number {
+  color: #111814;
+  font-size: 28rpx;
+  font-weight: 850;
+  text-align: center;
 }
 
 .person {
@@ -357,14 +361,14 @@ button::after {
   font-size: 24rpx;
 }
 
-.done {
+.bonus {
   color: #26724f;
-  font-size: 24rpx;
-  font-weight: 800;
+  font-size: 30rpx;
+  font-weight: 850;
 }
 
-.done.risk {
-  color: #d45a4c;
+.bonus.muted {
+  color: #9aa29d;
 }
 
 .empty {

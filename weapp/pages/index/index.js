@@ -139,7 +139,8 @@ Page({
       return {
         ...item,
         nickName,
-        rankText: rankIcons[index] || String(index + 1),
+        rankIcon: rankIcons[index] || "•",
+        rankNumber: String(index + 1),
         rankClass: rankClasses[index] || ""
       };
     });

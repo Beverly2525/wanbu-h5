@@ -80,11 +80,15 @@ async function buildSummary() {
 
   const rows = result.data || [];
   const joinedRows = rows.filter((row) => row.joined);
-  const pool = joinedRows.reduce((sum, row) => sum + Number(row.stake || 0), 0);
   const lagging = joinedRows.filter((row) => Number(row.steps || 0) < targetSteps).length;
+  const incentivePool = joinedRows
+    .filter((row) => Number(row.steps || 0) < targetSteps)
+    .reduce((sum, row) => sum + Number(row.stake || 0), 0);
+  const winners = joinedRows.filter((row) => Number(row.steps || 0) >= targetSteps);
+  const bonus = winners.length > 0 ? Number((incentivePool / winners.length).toFixed(2)) : 0;
 
   return {
-    pool,
+    pool: incentivePool,
     players: joinedRows.length,
     lagging,
     leaderboard: rows.map((row) => ({
@@ -92,6 +96,7 @@ async function buildSummary() {
       nickName: row.nickName || "微信用户",
       stake: Number(row.stake || 1),
       steps: Number(row.steps || 0),
+      bonus: Number(row.steps || 0) >= targetSteps ? bonus : 0,
       joined: Boolean(row.joined)
     }))
   };
