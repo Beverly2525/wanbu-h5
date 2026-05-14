@@ -1,7 +1,8 @@
-const { apiBase } = require("../../config");
-
-const app = getApp();
 const targetSteps = 10000;
+
+function formatNumber(value) {
+  return String(Math.round(Number(value) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 Page({
   data: {
@@ -56,9 +57,7 @@ Page({
       return;
     }
 
-    this.ensureSession()
-      .then(() => this.saveProfile())
-      .then(() => this.syncSteps())
+    this.syncSteps(true)
       .then(() => {
         this.setData({ joined: true });
         wx.showToast({ title: "已加入挑战", icon: "success" });
@@ -66,48 +65,25 @@ Page({
       .catch((error) => this.showError(error));
   },
 
-  syncSteps() {
-    return this.ensureSession()
-      .then(() => this.getWeRunData())
-      .then((res) => this.request("/api/steps", {
-        sessionId: app.globalData.sessionId,
-        encryptedData: res.encryptedData,
-        iv: res.iv,
-        stake: this.data.stake
-      }))
+  syncSteps(joined = false) {
+    return this.getWeRunData()
+      .then((res) => {
+        if (!res.cloudID) {
+          throw new Error("请先开通云开发后再同步步数");
+        }
+
+        return this.callWanbu({
+          action: "syncSteps",
+          joined: joined || this.data.joined,
+          nickName: this.data.nickName.trim(),
+          stake: this.data.stake,
+          weRunData: wx.cloud.CloudID(res.cloudID)
+        });
+      })
       .then((result) => {
         this.updateSteps(result.steps || 0);
-        this.setData({
-          pool: result.pool || 0,
-          players: result.players || 0,
-          lagging: result.lagging || 0,
-          leaderboard: result.leaderboard || []
-        });
+        this.renderSummary(result);
       });
-  },
-
-  ensureSession() {
-    if (app.globalData.sessionId) {
-      return Promise.resolve(app.globalData.sessionId);
-    }
-
-    return new Promise((resolve, reject) => {
-      wx.login({
-        success: ({ code }) => {
-          if (!code) {
-            reject(new Error("微信登录失败"));
-            return;
-          }
-          this.request("/api/login", { code })
-            .then((res) => {
-              app.globalData.sessionId = res.sessionId;
-              resolve(res.sessionId);
-            })
-            .catch(reject);
-        },
-        fail: reject
-      });
-    });
   },
 
   getWeRunData() {
@@ -119,50 +95,49 @@ Page({
     });
   },
 
-  saveProfile() {
-    return this.request("/api/profile", {
-      sessionId: app.globalData.sessionId,
-      nickName: this.data.nickName.trim()
+  loadLeaderboard() {
+    this.callWanbu({ action: "leaderboard" })
+      .then((res) => this.renderSummary(res))
+      .catch(() => {});
+  },
+
+  callWanbu(data) {
+    return new Promise((resolve, reject) => {
+      if (!wx.cloud) {
+        reject(new Error("当前基础库不支持云开发"));
+        return;
+      }
+
+      wx.cloud.callFunction({
+          name: "wanbu",
+          data,
+        success: ({ result }) => {
+          if (result && result.ok !== false) {
+            resolve(result);
+            return;
+          }
+          reject(new Error((result && result.error) || "云函数请求失败"));
+        },
+        fail: reject
+      });
     });
   },
 
-  loadLeaderboard() {
-    this.request("/api/leaderboard", {}, "GET")
-      .then((res) => {
-        this.setData({
-          pool: res.pool || 0,
-          players: res.players || 0,
-          lagging: res.lagging || 0,
-          leaderboard: res.leaderboard || []
-        });
-      })
-      .catch(() => {});
+  renderSummary(result) {
+    this.setData({
+      pool: result.pool || 0,
+      players: result.players || 0,
+      lagging: result.lagging || 0,
+      leaderboard: result.leaderboard || []
+    });
   },
 
   updateSteps(steps) {
     const progress = Math.min(100, Math.round((steps / targetSteps) * 100));
     this.setData({
       steps,
-      stepsText: new Intl.NumberFormat("zh-CN").format(steps),
+      stepsText: formatNumber(steps),
       progress
-    });
-  },
-
-  request(path, data, method = "POST") {
-    return new Promise((resolve, reject) => {
-      wx.request({
-        url: `${apiBase}${path}`,
-        method,
-        data,
-        success: ({ statusCode, data: body }) => {
-          if (statusCode >= 200 && statusCode < 300 && body && body.ok !== false) {
-            resolve(body);
-            return;
-          }
-          reject(new Error((body && body.error) || "请求失败"));
-        },
-        fail: reject
-      });
     });
   },
 

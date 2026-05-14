@@ -1,9 +1,10 @@
 # 真实微信步数版接入说明
 
-当前仓库有两套东西：
+当前仓库有三套东西：
 
 - `index.html` / `styles.css` / `app.js`：GitHub Pages 上的静态演示版。
-- `weapp/` + `server/`：真实微信步数版的起步代码。
+- `weapp/` + `weapp/cloudfunctions/wanbu`：推荐使用的微信云开发真实步数版。
+- `server/`：外部服务器后端模板，适合以后不用云开发时迁移。
 
 真实版不能只靠普通 H5 完成，因为微信运动步数属于小程序开放能力，需要用户授权后调用 `wx.getWeRunData`，并在服务端解密。
 
@@ -11,27 +12,19 @@
 
 1. 微信小程序账号
 2. 小程序 `AppID`
-3. 小程序 `AppSecret`
-4. 一个 HTTPS 后端域名
-5. 一个数据库，正式版必须持久化用户、步数、挑战记录和结算记录
+3. 微信开发者工具里的云开发环境
 
-不要把 `AppSecret` 写进前端、小程序包或 GitHub。它只能放在后端环境变量里。
+云开发版本不需要你把 `AppSecret` 发给任何人。
 
 ## 接入流程
 
 1. 打开微信开发者工具。
 2. 导入 `weapp/` 目录。
 3. 把 `weapp/project.config.json` 里的 `appid` 从 `touristappid` 改成你的小程序 AppID。
-4. 部署 `server/server.js` 到一个 HTTPS 后端。
-5. 在后端环境变量里配置：
-
-```bash
-WECHAT_APPID=你的小程序AppID
-WECHAT_SECRET=你的小程序AppSecret
-```
-
-6. 把 `weapp/config.js` 里的 `apiBase` 改成你的 HTTPS 后端域名。
-7. 到微信公众平台后台配置小程序合法请求域名。
+4. 点击微信开发者工具顶部的“云开发”，按提示开通环境。
+5. 复制云开发环境 ID，填入 `weapp/config.js` 的 `cloudEnvId`。
+6. 在资源管理器里右键 `cloudfunctions/wanbu`，选择“上传并部署：云端安装依赖”。
+7. 在云开发控制台创建数据库集合 `players`。
 8. 在真机微信里测试授权微信运动。
 
 ## 昵称说明
@@ -47,7 +40,7 @@ wx.login()
 wx.getWeRunData()
 ```
 
-后端调用微信 `jscode2session` 得到 `session_key`，再解密 `wx.getWeRunData` 返回的 `encryptedData` 和 `iv`，得到 `stepInfoList`。
+云开发版本使用 `res.cloudID` + `wx.cloud.CloudID`。云函数收到后会直接得到开放数据里的 `stepInfoList`，不用你手动管理 `session_key`。
 
 ## 资金规则提醒
 

@@ -1,4 +1,5 @@
 module.exports = {
-  // Replace with your HTTPS backend domain after deployment.
-  apiBase: "https://example.com"
+  // Fill this after enabling Cloud Development in WeChat DevTools.
+  // Example: "cloud1-0gxxxxxx12345678"
+  cloudEnvId: ""
 };
