@@ -1,0 +1,76 @@
+<view class="page">
+  <view class="hero">
+    <view class="eyebrow">今日挑战</view>
+    <view class="title">万步挑战</view>
+    <view class="ring">
+      <view class="steps">{{stepsText}}</view>
+      <view class="target">目标 10,000 步</view>
+    </view>
+    <view class="stats">
+      <view>
+        <text class="stat-value">{{progress}}%</text>
+        <text class="stat-label">完成进度</text>
+      </view>
+      <view>
+        <text class="stat-value">{{timeLeft}}</text>
+        <text class="stat-label">今日剩余</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="panel">
+    <view class="panel-head">
+      <view>
+        <view class="panel-title">加入挑战</view>
+        <view class="panel-copy">授权微信运动后，系统会校验你的真实步数。</view>
+      </view>
+      <view class="pill">{{joined ? '已加入' : '未加入'}}</view>
+    </view>
+
+    <input
+      class="nickname"
+      type="nickname"
+      placeholder="填写微信昵称"
+      value="{{nickName}}"
+      bindblur="onNickNameInput"
+    />
+
+    <view class="stake-row">
+      <button
+        wx:for="{{stakes}}"
+        wx:key="*this"
+        class="stake {{stake === item ? 'active' : ''}}"
+        bindtap="chooseStake"
+        data-value="{{item}}"
+      >¥{{item}}</button>
+    </view>
+
+    <button class="primary" bindtap="joinChallenge">加入并同步微信步数</button>
+    <button class="secondary" bindtap="syncSteps">只同步步数</button>
+  </view>
+
+  <view class="pool">
+    <view>
+      <view class="eyebrow dark">当前激励池</view>
+      <view class="pool-amount">¥{{pool}}</view>
+    </view>
+    <view class="pool-meta">
+      <text>{{players}} 人参与</text>
+      <text>{{lagging}} 人落后</text>
+    </view>
+  </view>
+
+  <view class="board">
+    <view class="section-title">挑战榜</view>
+    <view wx:for="{{leaderboard}}" wx:key="openid" class="row">
+      <view class="rank">{{index + 1}}</view>
+      <view class="person">
+        <view class="name">{{item.nickName || '微信用户'}}</view>
+        <view class="meta">{{item.steps}} 步 · 挑战金 ¥{{item.stake}}</view>
+      </view>
+      <view class="done {{item.steps >= 10000 ? '' : 'risk'}}">
+        {{item.steps >= 10000 ? '已完成' : '冲刺中'}}
+      </view>
+    </view>
+  </view>
+</view>

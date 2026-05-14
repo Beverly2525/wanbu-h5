@@ -1,0 +1,12 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "万步挑战",
+    "navigationBarBackgroundColor": "#2f7d58",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#fbf8ef"
+  },
+  "style": "v2"
+}
