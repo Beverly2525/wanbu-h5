@@ -89,10 +89,54 @@ Page({
   },
 
   getWeRunData() {
-    return new Promise((resolve, reject) => {
+    return this.ensureWeRunAuth().then(() => new Promise((resolve, reject) => {
       wx.getWeRunData({
         success: resolve,
-        fail: () => reject(new Error("需要授权微信运动步数"))
+        fail: () => reject(new Error("未获取到微信运动步数"))
+      });
+    }));
+  },
+
+  ensureWeRunAuth() {
+    return new Promise((resolve, reject) => {
+      wx.getSetting({
+        success: ({ authSetting }) => {
+          if (authSetting["scope.werun"]) {
+            resolve();
+            return;
+          }
+
+          wx.authorize({
+            scope: "scope.werun",
+            success: resolve,
+            fail: () => {
+              wx.showModal({
+                title: "授权微信运动",
+                content: "需要读取你的微信运动步数，才能校验今日 10,000 步挑战。",
+                confirmText: "去授权",
+                cancelText: "稍后",
+                success: (modal) => {
+                  if (!modal.confirm) {
+                    reject(new Error("需要授权微信运动步数"));
+                    return;
+                  }
+
+                  wx.openSetting({
+                    success: (setting) => {
+                      if (setting.authSetting && setting.authSetting["scope.werun"]) {
+                        resolve();
+                        return;
+                      }
+                      reject(new Error("需要授权微信运动步数"));
+                    },
+                    fail: () => reject(new Error("需要授权微信运动步数"))
+                  });
+                }
+              });
+            }
+          });
+        },
+        fail: () => reject(new Error("无法读取授权状态"))
       });
     });
   },
