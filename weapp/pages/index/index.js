@@ -13,6 +13,7 @@ Page({
     nickName: "",
     stake: 1,
     stakes: [1, 5, 10],
+    customStake: "",
     joined: false,
     pool: 0,
     players: 0,
@@ -46,16 +47,33 @@ Page({
 
   chooseStake(event) {
     if (this.data.joined) return;
-    this.setData({ stake: Number(event.currentTarget.dataset.value) });
+    this.setData({
+      stake: Number(event.currentTarget.dataset.value),
+      customStake: ""
+    });
   },
 
   onNickNameInput(event) {
     this.setData({ nickName: event.detail.value || "" });
   },
 
+  onCustomStakeInput(event) {
+    if (this.data.joined) return;
+    const value = String(event.detail.value || "").replace(/[^\d.]/g, "");
+    const stake = Number(value);
+    this.setData({
+      customStake: value,
+      stake: stake > 0 ? stake : this.data.stake
+    });
+  },
+
   joinChallenge() {
     if (!this.data.nickName.trim()) {
       wx.showToast({ title: "先填昵称", icon: "none" });
+      return;
+    }
+    if (!this.getValidStake()) {
+      wx.showToast({ title: "金额需大于 0", icon: "none" });
       return;
     }
 
@@ -78,7 +96,7 @@ Page({
           action: "syncSteps",
           joined: joined || this.data.joined,
           nickName: this.data.nickName.trim(),
-          stake: this.data.stake,
+          stake: this.getValidStake(),
           weRunData: wx.cloud.CloudID(res.cloudID)
         });
       })
@@ -151,6 +169,14 @@ Page({
     this.setData({
       boardMode: event.currentTarget.dataset.mode
     });
+  },
+
+  getValidStake() {
+    const stake = Number(this.data.customStake || this.data.stake);
+    if (!Number.isFinite(stake) || stake <= 0) {
+      return 0;
+    }
+    return Math.min(999, Math.round(stake * 100) / 100);
   },
 
   callWanbu(data) {

@@ -32,6 +32,14 @@ function cleanName(value) {
   return name ? name.slice(0, 24) : "微信用户";
 }
 
+function cleanStake(value) {
+  const stake = Number(value || 1);
+  if (!Number.isFinite(stake) || stake <= 0) {
+    return 1;
+  }
+  return Math.min(999, Math.round(stake * 100) / 100);
+}
+
 async function upsertPlayer(openid, payload) {
   await ensurePlayersCollection();
   const day = todayKey();
@@ -41,7 +49,7 @@ async function upsertPlayer(openid, payload) {
     openid,
     day,
     nickName: cleanName(payload.nickName),
-    stake: Number(payload.stake || 1),
+    stake: cleanStake(payload.stake),
     joined: Boolean(payload.joined),
     steps: Number(payload.steps || 0),
     updatedAt: now
